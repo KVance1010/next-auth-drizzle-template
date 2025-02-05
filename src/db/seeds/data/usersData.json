@@ -1,0 +1,23 @@
+[
+  {
+    "userName": "JSmith",
+    "name": "John Smith",
+    "email": "j.smith@email.com",
+    "password": "password",
+    "role": "USER"
+  },
+  {
+    "userName": "JDoe",
+    "name": "Jane Doe",
+    "email": "j.doe@email.com",
+    "password": "password",
+    "role": "ADMIN"
+  },
+  {
+    "userName": "MJones",
+    "name": "Michael Jones",
+    "email": "m.jones@email.com",
+    "password": "password",
+    "role": "MODERATOR"
+  }
+]
