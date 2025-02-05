@@ -9,6 +9,7 @@ This project is a starter template for building applications with Next.js, Drizz
 - [Technologies](#technologies)
 - [Installation](#installation)
 - [License](#license)
+- [Connect](#connect-with-me)
 
 ## Description
 
