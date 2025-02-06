@@ -1,6 +1,6 @@
-import "server-only";
 import transporter from "@/utils/email-transporter";
 import env from "@/validations/env";
+import "server-only";
 
 export const sendPasswordResetEmail = async (email: string, token: string) => {
   const baseURL = env.AUTH_URL;

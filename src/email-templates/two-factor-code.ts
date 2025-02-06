@@ -1,6 +1,6 @@
-import "server-only";
 import transporter from "@/utils/email-transporter";
 import env from "@/validations/env";
+import "server-only";
 
 export const sendTwoFactorAuth = async (email: string, token: string) => {
   await transporter.sendMail({

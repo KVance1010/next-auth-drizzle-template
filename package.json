@@ -1,7 +1,8 @@
 {
-  "name": "another-auth",
+  "name": "next-auth-drizzle-template",
   "version": "0.1.0",
   "private": true,
+  "description": "A starter template for building applications with Next.js, Drizzle ORM, and Auth.js.",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
@@ -52,5 +53,23 @@
     "tailwindcss": "^3.4.1",
     "tsx": "^4.19.2",
     "typescript": "^5"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/KVance1010/next15-auth5-drizzle-template.git"
+  },
+  "keywords": [
+    "nextjs",
+    "drizzle-orm",
+    "authjs",
+    "tailwindcss",
+    "typescript",
+    "react",
+    "starter-template",
+    "nodemailer",
+    "react-hook-form",
+    "zod",
+    "eslint",
+    "prettier"
+  ]
 }
