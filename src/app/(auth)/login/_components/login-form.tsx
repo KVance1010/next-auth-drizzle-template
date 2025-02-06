@@ -12,14 +12,16 @@ import { FormButton, FormInput, FormWrapper } from "@/components/ui";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { LoginType, LoginValidation } from "@/validations";
 
-
 export const LoginForm = () => {
   const searchParams = useSearchParams();
   const [showTwoFactor, setShowTwoFactor] = useState(false);
   const urlError =
-    searchParams.get("error") === "OAuthAccountNotLinked"
-      ? "Email already in use with different login method"
-      : "";
+    searchParams.get("error") === "CredentialsOnly"
+      ? "This email is registered with password authentication. Please sign in with your email and password."
+      : searchParams.get("error") === "OAuthAccountNotLinked"
+        ? "Email already in use with different login method"
+        : "";
+
   const [error, setError] = useState<string | undefined>("");
 
   const form = useForm<LoginType>({

@@ -1,6 +1,3 @@
-import { DrizzleAdapter } from "@auth/drizzle-adapter";
-import NextAuth from "next-auth";
-import Credentials from "next-auth/providers/credentials";
 import authConfig from "@/auth.config";
 import db from "@/db";
 import {
@@ -20,6 +17,9 @@ import { sendVerificationEmail } from "@/email-templates/welcome-verification";
 import { ExtendedUser } from "@/types/next-auth";
 import { comparePassword } from "@/utils/password";
 import { LoginValidation } from "@/validations";
+import { DrizzleAdapter } from "@auth/drizzle-adapter";
+import NextAuth from "next-auth";
+import Credentials from "next-auth/providers/credentials";
 import { createSession } from "./db/queries/auth/session";
 import { accounts, authenticators, sessions, users } from "./db/schemas";
 
@@ -40,8 +40,19 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   callbacks: {
     async signIn({ user, account }) {
-      if (account?.provider !== "credentials") return true;
-      return !!user;
+      if (account?.provider === "credentials") {
+        return !!user;
+      }
+      try {
+        const existingUser = await getUserByEmail(user?.email as string);
+
+        if (existingUser?.password) {
+          return "/login?error=CredentialsOnly";
+        }
+        return true;
+      } catch {
+        return "/login?error=OAuthError";
+      }
     },
 
     async jwt({ account, token, user }) {

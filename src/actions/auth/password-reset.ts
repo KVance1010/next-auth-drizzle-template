@@ -5,8 +5,10 @@ import {
   generatePasswordResetToken,
   getPasswordResetTokenByToken
 } from "@/db/queries/auth/reset-token";
+import { generateVerificationToken } from "@/db/queries/auth/verification-tokens";
 import { getUserByEmail, updateUserPassword } from "@/db/queries/users";
 import { sendPasswordResetEmail } from "@/email-templates/password-reset";
+import { sendVerificationEmail } from "@/email-templates/welcome-verification";
 import { hashPassword } from "@/utils/password";
 import {
   NewPasswordType,
@@ -19,19 +21,38 @@ export const passwordResetRequest = async (values: ResetType) => {
   try {
     const validateEmail = ResetValidation.safeParse(values);
     if (!validateEmail.success) {
-      return { error: true, message: "Invalid email!" };
+      return { error: true, message: "Invalid email" };
     }
+
     const { email } = validateEmail.data;
     const user = await getUserByEmail(email);
+
     if (!user) {
-      return { error: true, message: "User not found!" };
+      return { error: true, message: "Reset link sent if email exists" };
     }
+
+    if (!user.password) {
+      return {
+        error: true,
+        message: "Password reset not available for social login accounts"
+      };
+    }
+
+    if (!user.emailVerified) {
+      const verificationToken = await generateVerificationToken(email);
+      await sendVerificationEmail(
+        verificationToken.email,
+        verificationToken.token
+      );
+      return { error: true, message: "Please verify your email first" };
+    }
+
     const resetToken = await generatePasswordResetToken(email);
     await sendPasswordResetEmail(resetToken.email, resetToken.token);
-    return { success: "Password reset link sent to your email!" };
-  } catch (error) {
-    console.error(error);
-    return { error: true, message: "something went wrong!" };
+
+    return { success: "Reset link sent if email exists" };
+  } catch {
+    return { error: true, message: "Something went wrong. Please try again" };
   }
 };
 

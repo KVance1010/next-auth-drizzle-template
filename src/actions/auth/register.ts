@@ -1,11 +1,11 @@
 "use server";
 
-import { NeonDbError } from "@neondatabase/serverless";
 import { generateVerificationToken } from "@/db/queries/auth/verification-tokens";
 import { createUser } from "@/db/queries/users";
 import { sendVerificationEmail } from "@/email-templates/welcome-verification";
 import { hashPassword } from "@/utils/password";
 import { RegistrationType, RegistrationValidation } from "@/validations/users";
+import { NeonDbError } from "@neondatabase/serverless";
 
 export const register = async (value: RegistrationType) => {
   try {
@@ -33,7 +33,10 @@ export const register = async (value: RegistrationType) => {
     });
 
     if (!newUser?.email || !newUser) {
-      return { error: "Could not create user" };
+      return {
+        error: true,
+        message: "An account is already registered with that email address."
+      };
     }
     const verificationToken = await generateVerificationToken(newUser.email);
     await sendVerificationEmail(
@@ -44,7 +47,7 @@ export const register = async (value: RegistrationType) => {
     return {
       success: "Verification Email Sent. Please follow the link in your email."
     };
-  } catch (e ) {
+  } catch (e) {
     return {
       error: true,
       message:
