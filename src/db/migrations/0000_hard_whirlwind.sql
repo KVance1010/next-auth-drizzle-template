@@ -1,3 +1,4 @@
+CREATE TYPE "public"."role" AS ENUM('USER', 'ADMIN', 'MODERATOR');--> statement-breakpoint
 CREATE TABLE "accounts" (
 	"userId" text NOT NULL,
 	"type" text NOT NULL,
@@ -10,6 +11,18 @@ CREATE TABLE "accounts" (
 	"scope" text,
 	"id_token" text,
 	"session_state" text
+);
+--> statement-breakpoint
+CREATE TABLE "authenticator" (
+	"credentialID" text NOT NULL,
+	"userId" text NOT NULL,
+	"providerAccountId" text NOT NULL,
+	"credentialPublicKey" text NOT NULL,
+	"counter" integer NOT NULL,
+	"credentialDeviceType" text NOT NULL,
+	"credentialBackedUp" boolean NOT NULL,
+	"transports" text,
+	CONSTRAINT "authenticator_credentialID_unique" UNIQUE("credentialID")
 );
 --> statement-breakpoint
 CREATE TABLE "passwordResetTokens" (
@@ -50,7 +63,8 @@ CREATE TABLE "users" (
 	"role" "role" DEFAULT 'USER' NOT NULL,
 	"is_two_factor_enabled" boolean DEFAULT false,
 	"updated_at" timestamp DEFAULT now(),
-	"create_at" timestamp DEFAULT now() NOT NULL
+	"create_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "users_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint
 CREATE TABLE "verificationTokens" (
@@ -61,6 +75,7 @@ CREATE TABLE "verificationTokens" (
 );
 --> statement-breakpoint
 ALTER TABLE "accounts" ADD CONSTRAINT "accounts_userId_users_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "authenticator" ADD CONSTRAINT "authenticator_userId_users_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "sessions" ADD CONSTRAINT "sessions_userId_users_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "twoFactorConfirmations" ADD CONSTRAINT "twoFactorConfirmations_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 CREATE UNIQUE INDEX "email_unique_index" ON "users" USING btree (lower("email"));

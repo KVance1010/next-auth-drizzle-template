@@ -1,8 +1,8 @@
-export { accounts, sessions, authenticators } from "./auth";
-export { users } from "./users";
+export { accounts, authenticators, sessions } from "./auth";
 export {
-  verificationTokens,
   passwordResetTokens,
+  twoFactorConfirmations,
   twoFactorTokens,
-  twoFactorConfirmations
+  verificationTokens
 } from "./tokens";
+export { UserRoles, users } from "./users";
